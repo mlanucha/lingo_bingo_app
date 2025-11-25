@@ -170,9 +170,9 @@ def main():
 		st.subheader("🧠 Vocabulary Drill Results")
 
 		for i, item in enumerate(st.session_state.vocab_list, start=1):
-			col0, col1, col2, col3, col4 = st.columns([0.5, 2, 2, 2, 1])
+			col0, col1, col2, col3, col4 = st.columns([0.5, 2, 2, 2, 2])
 
-			with col0:
+			with col0:git 
 				st.markdown(f"**{i}.**")
 			with col1:
 				st.markdown(f"**{item.get('Original', '')}**")
@@ -189,7 +189,8 @@ def main():
 					audio_path = text_to_speech(tts_text)
 					if audio_path:
 						audio_bytes = open(audio_path, "rb").read()
-						st.audio(audio_bytes, format="audio/mp3")
+						with st.container():
+							st.audio(audio_bytes, format="audio/mp3")
 
 if __name__ == "__main__":
     main()
