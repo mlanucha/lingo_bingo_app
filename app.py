@@ -83,6 +83,26 @@ def generate_romaji(japanese_words):
         st.error(f"Failed to generate Romaji: {e}")
         return ["-"] * len(japanese_words)
 
+# Generate grammar explanation for the translation
+def explain_grammar(text, language):
+    prompt = (
+        f"You're a friendly language tutor. Explain the grammar and structure of the following sentence in {language}, "
+        f"keeping it accessible to a language learner. Focus on interesting grammar patterns, verb forms, particles (if Japanese), "
+        "word order, and anything worth noting. Be concise but helpful.\n\n"
+        f"Sentence:\n{text}\n\nExplanation:"
+    )
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.4,
+            max_tokens=250,
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        st.error(f"Failed to explain grammar: {e}")
+        return None
+
 # Main app
 def main():
 	st.title("Kronk's Language Assistant 🚀💥")
@@ -118,10 +138,24 @@ def main():
 					st.session_state.translation = answer
 					st.session_state.translated_language = language
 					st.session_state.user_text = user_text
-					st.success("Boom! Here's your polished text:")
-					st.write(answer)
+
+					st.session_state.grammar_explanation = explain_grammar(answer, language)
+
 				except Exception as e:
 					st.error(f"Oops, something went kaboom: {e}")
+
+	# Always display translation and grammar explanation if available
+	if st.session_state.translation:
+		st.markdown("---")
+		st.success("Boom! Here's your polished text:")
+		st.write(st.session_state.translation)
+
+		# Grammar Explanation
+		with st.expander("📘 Grammar Explanation"):
+			explanation = st.session_state.get("grammar_explanation", "")
+			if explanation:
+				st.markdown(explanation)
+
 
 	# Restore sentence translation playback
 	if st.session_state.translation:
@@ -172,7 +206,7 @@ def main():
 		for i, item in enumerate(st.session_state.vocab_list, start=1):
 			col0, col1, col2, col3, col4 = st.columns([0.5, 2, 2, 2, 2])
 
-			with col0:git 
+			with col0:
 				st.markdown(f"**{i}.**")
 			with col1:
 				st.markdown(f"**{item.get('Original', '')}**")
