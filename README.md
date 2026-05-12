@@ -1,4 +1,4 @@
-# 🧠 Lingo Bingo App
+# 🧠 AI Language Learning Assistant
 
 An interactive Streamlit app that helps users translate phrases, explore grammar, and drill vocabulary. Built using OpenAI's GPT API for language processing.
 
